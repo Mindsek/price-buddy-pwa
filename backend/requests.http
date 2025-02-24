@@ -21,9 +21,9 @@ POST http://localhost:3001/auth/register
 Content-Type: application/json
 
 {
-  "email": "test3@test.com",
-  "username": "Johnee",
-  "password": "test1234"
+  "email": "test@test.test",
+  "username": "RobbyJackson",
+  "password": "testtest"
 }
 
 ### Delete user

@@ -1,19 +1,27 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsString, MinLength } from 'class-validator';
 
-export type AuthBody = {
-  email: string;
-  password: string;
-};
-
-export class AuthBodyDto implements AuthBody {
-  @IsNotEmpty()
+export class AuthBodyDto {
+  @ApiProperty({
+    description: 'Email address of the user',
+    example: 'user@example.com',
+  })
   @IsEmail()
   email: string;
 
-  @IsNotEmpty()
+  @ApiProperty({
+    description: "User's password",
+    example: 'password123',
+  })
+  @IsString()
+  @MinLength(6)
   password: string;
 }
 
-export type AuthResponse = {
+export class AuthResponse {
+  @ApiProperty({
+    description: 'JWT token for authentication',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  })
   access_token: string;
-};
+}
