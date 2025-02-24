@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -11,6 +12,8 @@ import { AuthBodyDto, AuthResponse } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
@@ -40,6 +43,7 @@ export class AuthService {
     const { email, password } = authBody;
 
     const existingUser = await this.usersService.findByEmail(email);
+    this.logger.log('existingUser', existingUser);
     if (!existingUser) {
       throw new NotFoundException('User or password incorrect');
     }
@@ -48,6 +52,7 @@ export class AuthService {
       password,
       existingUser.password,
     );
+    this.logger.log('isPasswordValid', isPasswordValid);
     if (!isPasswordValid) {
       throw new NotFoundException('User or password incorrect');
     }
@@ -59,6 +64,8 @@ export class AuthService {
     password: string,
     hashedPassword: string,
   ): Promise<boolean> {
+    this.logger.log('password', password);
+    this.logger.log('hashedPassword', hashedPassword);
     return await compare(password, hashedPassword);
   }
 
