@@ -1,0 +1,36 @@
+### Get hello 
+GET http://localhost:3001/
+
+### Get users
+GET http://localhost:3001/users
+
+### Get user by id
+GET http://localhost:3001/users/018bcb82-f581-4f9a-b3cf-1e91aeae8839
+
+### Login
+POST http://localhost:3001/auth/login
+Content-Type: application/json
+
+{
+    "email": "test@test.com",
+    "password": "test123"
+}
+
+### Create user
+POST http://localhost:3001/auth/register
+Content-Type: application/json
+
+{
+  "email": "test3@test.com",
+  "username": "Johnee",
+  "password": "test1234"
+}
+
+### Delete user
+DELETE http://localhost:3001/users/755f0403-6c83-418d-a574-96aaf910350e
+
+### Get profile
+GET http://localhost:3001/auth/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtN2cxemlocjAwMDA3a3cwbTR6eHZtaTMiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJpYXQiOjE3NDAyMzQzNjUsImV4cCI6MTc0MjgyNjM2NX0.kwLL4pa4qCggC2d9_rUqPIiLvIWvccDnSYE9HO6054k
+
+
