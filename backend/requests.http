@@ -27,7 +27,7 @@ Content-Type: application/json
 }
 
 ### Delete user
-DELETE http://localhost:3001/users/755f0403-6c83-418d-a574-96aaf910350e
+DELETE http://localhost:3001/users/419a7523-34c4-4e1e-b1f4-f40cdc4fc996
 
 ### Get profile
 GET http://localhost:3001/auth/profile

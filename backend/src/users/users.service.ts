@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { hash } from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -10,24 +9,14 @@ export class UsersService {
 
   async create(data: CreateUserDto) {
     try {
-      await this.prisma.user.create({
-        data: {
-          ...data,
-          password: await this.hashPassword(data.password),
-        },
-      });
-      const user = await this.prisma.user.findUnique({
-        where: { email: data.email },
+      const user = await this.prisma.user.create({
+        data,
       });
       return user;
     } catch (error) {
       console.error('error creating user', error);
       throw new Error('Error creating user');
     }
-  }
-
-  private async hashPassword(password: string) {
-    return await hash(password, 10);
   }
 
   findAll() {
