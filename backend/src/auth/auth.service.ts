@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
@@ -43,7 +44,9 @@ export class AuthService {
     const { email, password } = authBody;
 
     const existingUser = await this.usersService.findByEmail(email);
-    this.logger.log('existingUser', existingUser);
+    this.logger.log(
+      `Checking user with email: ${email}, found: ${JSON.stringify(existingUser)}`,
+    );
     if (!existingUser) {
       throw new NotFoundException('User or password incorrect');
     }
@@ -71,8 +74,10 @@ export class AuthService {
 
   private async authenticateUser(user: User): Promise<AuthResponse> {
     const payload = { id: user.id, email: user.email, username: user.username };
+    const access_token = await this.jwtService.signAsync(payload);
+    this.logger.log('access_token', access_token);
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      access_token,
     };
   }
 
@@ -85,5 +90,13 @@ export class AuthService {
       id: user.id,
       email: user.email,
     };
+  }
+
+  async verifyToken(token: string) {
+    try {
+      return this.jwtService.verify(token, { secret: process.env.JWT_SECRET });
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
   }
 }

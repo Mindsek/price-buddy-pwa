@@ -1,6 +1,16 @@
-import { Body, Controller, Logger, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Logger,
+  Post,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { AuthBodyDto, AuthResponse } from './dto/auth.dto';
 
@@ -84,6 +94,40 @@ export class AuthController {
         `Registration failed for email: ${body.email}, username: ${body.username} - Error: ${error.message}`,
       );
       throw error;
+    }
+  }
+
+  @Get('verify')
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Vérifie si le token JWT est valide' })
+  @ApiResponse({
+    status: 200,
+    description: 'Token valide, retourne les infos de l’utilisateur',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string' },
+        email: { type: 'string' },
+        username: { type: 'string' },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Token invalide ou manquant' })
+  async verify(@Res() res: Response) {
+    const token = res.req.cookies['auth-buddy'];
+    if (!token) {
+      throw new UnauthorizedException('No token provided');
+    }
+
+    try {
+      const payload = await this.authService.verifyToken(token);
+      res.json({
+        id: payload.id,
+        email: payload.email,
+        username: payload.username,
+      });
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
     }
   }
 }
